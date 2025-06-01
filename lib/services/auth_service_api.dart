@@ -1,95 +1,70 @@
 import 'dart:convert';
+import 'dart:developer';
 
-class User {
-  final String id;
-  final String name;
-  final String email;
-  final String password;
-  final String role;
-  final bool isActive;
-  final List<dynamic> orders; 
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  final int v;
+import 'package:dashboard_admin/core/URL/url.dart';
+import 'package:dashboard_admin/screen/auth/login_page.dart';
+import 'package:dashboard_admin/services/store_token.dart';
+import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'package:jwt_decoder/jwt_decoder.dart';
 
-  User({
-    required this.id,
-    required this.name,
-    required this.email,
-    required this.password,
-    required this.role,
-    required this.isActive,
-    required this.orders,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.v,
-  });
+import '../models/user_model.dart';
 
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
-      id: json['_id'] as String,
-      name: json['name'] as String,
-      email: json['email'] as String,
-      password: json['password'] as String,
-      role: json['role'] as String,
-      isActive: json['isActive'] as bool,
-      orders: List<dynamic>.from(json['orders'] as List), // Adjust if Order type is known
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      updatedAt: DateTime.parse(json['updatedAt'] as String),
-      v: json['__v'] as int,
-    );
+class AuthServiceApi {
+  Future<String?> _getToken() async {
+    return await StoreToken().storeToken();
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      '_id': id,
-      'name': name,
-      'email': email,
-      'password': password,
-      'role': role,
-      'isActive': isActive,
-      'orders': orders,
-      'createdAt': createdAt.toIso8601String(),
-      'updatedAt': updatedAt.toIso8601String(),
-      '__v': v,
-    };
+  Future<bool> login(String email, String password) async {
+    try {
+      final url = Uri.parse('$URL/users/login');
+      final response = await http.post(
+        url,
+        body: jsonEncode({'email': email, 'password': password}),
+        headers: {
+          'x-api-key': 'my_super_secret_key',
+          'Content-Type': 'application/json',
+        },
+      );
+      if (response.statusCode == 201) {
+        final responseData = jsonDecode(response.body);
+        final token = responseData['token'];
+        await StoreToken().createToken(token);
+        log('Token: $token');
+        return true;
+      } else {
+        log('error to Login at Authservice ');
+        return false;
+      }
+    } catch (e) {
+      log('error to fetch current user');
+      return false;
+    }
   }
-}
 
-// Example usage:
-void main() {
-  String jsonString = '''
-  {
-    "_id": "68396a9db775ca688a9295e3",
-    "name": "VeasnaKH",
-    "email": "veasna@gmail.com",
-    "password": "\$2b\$10\$3ygcFIKKGton03n7Y4kInuCid1LeHCdDQ.KbZEdVL1FBSjBrydMY.",
-    "role": "customer",
-    "isActive": true,
-    "orders": [],
-    "createdAt": "2025-05-30T08:21:49.203Z",
-    "updatedAt": "2025-05-30T08:21:49.203Z",
-    "__v": 0
+  Future<UserModel> fetchCurrentUser() async {
+    final token = await _getToken();
+
+    try {
+      final uid = JwtDecoder.decode(token!)['_id'];
+
+      final url = Uri.parse('$URL/users/profile/$uid');
+      final response = await http.get(url, headers: {'Bearer Token': token});
+      final bool hasExpired = JwtDecoder.isExpired(token);
+      if (hasExpired) {
+        Get.to(LoginPage());
+        Get.snackbar('token Expired', 'Please log in again.');
+        return UserModel.empty();
+      }
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jwtResponsData = jsonDecode(response.body);
+        return UserModel.fromJson(jwtResponsData);
+      } else {
+        return UserModel.empty();
+      }
+    } catch (e) {
+      log('error to fetch crrent user $e');
+      return UserModel.empty();
+    }
   }
-  ''';
-
-  // Parse JSON string to Map
-  Map<String, dynamic> jsonMap = json.decode(jsonString) as Map<String, dynamic>;
-
-  // Create User object from JSON map
-  User user = User.fromJson(jsonMap);
-
-  // Print some values to verify
-  print('User ID: ${user.id}');
-  // print('User Name: ${user.name}');
-  // print('User Email: ${user.email}');
-  // print('User Is Active: ${user.isActive}');
-  // print('User Created At: ${user.createdAt}');
-  // print('User Orders: ${user.orders}');
-
-  // Convert User object back to JSON map
-  Map<String, dynamic> userJson = user.toJson();
-//   print('\nUser back to JSON:');
-//   print(json.encode(userJson)); // For pretty print: print(JsonEncoder.withIndent('  ').convert(userJson));
-// 
 }
