@@ -1,6 +1,5 @@
 import 'package:dashboard_admin/screen/home_ds.dart';
 import 'package:dashboard_admin/screen/products-screen/main_product_screen.dart';
-import 'package:dashboard_admin/screen/products-screen/product_page.dart';
 import 'package:flutter/material.dart';
 import 'package:sidebarx/sidebarx.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';

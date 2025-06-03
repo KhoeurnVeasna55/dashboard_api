@@ -11,7 +11,7 @@ class ProductPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final ProductController productController = Get.find();
-    final ProductScreenController _productScreenController = Get.find();
+    final ProductScreenController productScreenController = Get.find();
 
     final List headerTabel = [
       'Image',
@@ -116,7 +116,7 @@ class ProductPage extends StatelessWidget {
                                   const SizedBox(width: 10),
                                   ElevatedButton.icon(
                                     onPressed: () {
-                                      _productScreenController.toggleChange(1);
+                                      productScreenController.toggleChange(1);
                                     },
                                     icon:  Icon(LucideIcons.plus, color: Colors.white,),
                                     label:  Text('Create',style: Theme.of(context).textTheme.titleSmall,),
