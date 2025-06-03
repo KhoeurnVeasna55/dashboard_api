@@ -1,8 +1,10 @@
+import 'package:dashboard_admin/screen/auth/login_page.dart';
+import 'package:dashboard_admin/services/store_token.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:sidebarx/sidebarx.dart';
-
-import 'main_page.dart';
 
 class HomeDsPage extends StatelessWidget {
   const HomeDsPage({super.key, required this.controller});
@@ -15,7 +17,7 @@ class HomeDsPage extends StatelessWidget {
     return AnimatedBuilder(
       animation: controller,
       builder: (context, child) {
-        final pageTitle = getTitleByIndex(controller.selectedIndex);
+        final pageTitle = 'DashBoard';
         switch (controller.selectedIndex) {
           case 0:
             return Padding(
@@ -64,14 +66,14 @@ class HomeDsPage extends StatelessWidget {
                             color: Color(0xFFFFD54F),
                           ),
                           IconButton(
-                            onPressed: () {},
+                            onPressed: () async {
+                              await StoreToken().removeToken();
+                              Get.to(() => LoginPage());
+                            },
                             icon: Icon(LucideIcons.bell),
                             color: Color(0xFFFFD54F),
                           ),
-                          CircleAvatar(
-                            radius: 20,
-                           
-                          ),
+                          CircleAvatar(radius: 20),
                         ],
                       ),
                     ],

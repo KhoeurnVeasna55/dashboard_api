@@ -1,13 +1,37 @@
 import 'dart:developer';
+import 'package:dashboard_admin/services/store_token.dart';
 import 'package:get/get.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import '../models/user_model.dart';
 import '../services/auth_service_api.dart';
 
 class AuthController extends GetxController {
   final isLoading = false.obs;
-  final userModel = [UserModel].obs;
+  final userModel = Rxn<UserModel>();
   final currentUser = ''.obs;
-  final token = '';
+  final token = ''.obs;
+
+  final tokenLoaded = false.obs; // Add this
+
+  final isLogin = true.obs;
+
+  // @override
+  // void onInit(){
+  //   super.onInit();
+  //   checkLogin();
+  // }
+
+  Future<void> checkLogin() async {
+    final tokenFromStorage = await StoreToken().getToken();
+    if (tokenFromStorage != null && tokenFromStorage.isNotEmpty) {
+      isLogin.value = !JwtDecoder.isExpired(tokenFromStorage);
+      currentUser.value = tokenFromStorage;
+      token.value = tokenFromStorage;
+    } else {
+      isLogin.value = false;
+    }
+    tokenLoaded.value = true;
+  }
 
   Future<bool> login(String email, String password) async {
     try {
@@ -22,11 +46,13 @@ class AuthController extends GetxController {
     }
   }
 
-  Future<void> fecthUser(String token) async {
+  Future<void> fetchUser(String token) async {
     try {
       isLoading.value = true;
+      final fetchedUser = await AuthServiceApi().fetchCurrentUser();
+      userModel.value = fetchedUser; // ✅ Assign to observable
     } catch (e) {
-      log('error to fetch User $e');
+      log('Error fetching user: $e');
     } finally {
       isLoading.value = false;
     }

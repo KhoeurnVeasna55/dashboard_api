@@ -1,8 +1,9 @@
 import 'package:dashboard_admin/screen/home_ds.dart';
+import 'package:dashboard_admin/screen/products-screen/main_product_screen.dart';
+import 'package:dashboard_admin/screen/products-screen/product_page.dart';
 import 'package:flutter/material.dart';
 import 'package:sidebarx/sidebarx.dart';
-import  'package:lucide_icons_flutter/lucide_icons.dart';
-
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class MainPage extends StatelessWidget {
   MainPage({super.key});
@@ -36,8 +37,18 @@ class MainPage extends StatelessWidget {
               children: [
                 if (!isSmallScreen) ExampleSidebarX(controller: _controller),
                 Expanded(
-                  child: Center(
-                    child: HomeDsPage(controller: _controller),
+                  child: AnimatedBuilder(
+                    animation: _controller,
+                    builder: (context, _) {
+                      switch (_controller.selectedIndex) {
+                        case 0:
+                          return HomeDsPage(controller: _controller);
+                        case 1:
+                          return MainProductScreen();
+                        default:
+                          return Center(child: Text('Page not found'));
+                      }
+                    },
                   ),
                 ),
               ],
@@ -71,7 +82,7 @@ class ExampleSidebarX extends StatelessWidget {
         textStyle: Theme.of(context).textTheme.titleSmall,
         selectedTextStyle: Theme.of(context).textTheme.titleSmall!.copyWith(
           color: Color(0xFF273C6E),
-          fontSize: 16
+          fontSize: 16,
         ),
         hoverTextStyle: const TextStyle(
           color: Colors.white,
@@ -83,10 +94,7 @@ class ExampleSidebarX extends StatelessWidget {
         selectedItemTextPadding: const EdgeInsets.only(left: 30),
         selectedItemPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         selectedItemMargin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        selectedIconTheme: IconThemeData(
-          color: Color(0xFF273C6E),
-          size: 20,
-        ),
+        selectedIconTheme: IconThemeData(color: Color(0xFF273C6E), size: 20),
         // itemPadding: EdgeInsets.symmetric(horizontal: 10),
         itemDecoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
@@ -122,7 +130,6 @@ class ExampleSidebarX extends StatelessWidget {
               minRadius: 60,
               backgroundImage: AssetImage('assets/logo/Logo.jpg'),
             ),
-         
           ),
         );
       },
@@ -142,6 +149,7 @@ class ExampleSidebarX extends StatelessWidget {
           selectable: false,
           // onTap: () => _showDisabledAlert(context),
         ),
+        // ignore: deprecated_member_use
         const SidebarXItem(iconWidget: FlutterLogo(size: 20), label: 'Flutter'),
       ],
     );
@@ -198,9 +206,9 @@ class ExampleSidebarX extends StatelessWidget {
 String getTitleByIndex(int index) {
   switch (index) {
     case 0:
-      return 'Home';
+      return 'Dashboard';
     case 1:
-      return 'Search';
+      return 'Products';
     case 2:
       return 'People';
     case 3:

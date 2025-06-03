@@ -12,7 +12,7 @@ import '../models/user_model.dart';
 
 class AuthServiceApi {
   Future<String?> _getToken() async {
-    return await StoreToken().storeToken();
+    return await StoreToken().getToken();
   }
 
   Future<bool> login(String email, String password) async {
