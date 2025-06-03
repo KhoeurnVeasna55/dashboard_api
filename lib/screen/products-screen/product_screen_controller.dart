@@ -9,7 +9,7 @@ class ProductScreenController extends GetxController{
 
   final screens = [
     ProductPage(),
-    CreatePrdouctScreen()
+    CreateProductScreen()
   ];
 
   void toggleChange(int index){
