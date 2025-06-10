@@ -13,5 +13,6 @@ void main() async {
   await dotenv.load(fileName: ".env");
   StoreToken.initialize();
   Get.put(AuthController());
+
   runApp(const MyApp());
 }

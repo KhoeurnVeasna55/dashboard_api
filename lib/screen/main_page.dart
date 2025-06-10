@@ -105,8 +105,10 @@ class ExampleSidebarX extends StatelessWidget {
           color: accentCanvasColor,
           boxShadow: [
             BoxShadow(
-              color: Color.fromARGB(255, 40, 39, 94).withValues(alpha: 0.28),
-              blurRadius: 30,
+              color: accentCanvasColor.withOpacity(0.3),
+              blurRadius: 16,
+              offset: Offset(0, 4),
+              spreadRadius: 2,
             ),
           ],
         ),
