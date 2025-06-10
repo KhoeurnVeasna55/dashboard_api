@@ -19,6 +19,7 @@ class ProductPage extends StatelessWidget {
       'Title',
       'Categoty',
       'Brand',
+      'Amount',
       'Published',
       'Action',
     ];
@@ -64,7 +65,12 @@ class ProductPage extends StatelessWidget {
                                   child: ElevatedButton.icon(
                                     onPressed: () {},
                                     icon: const Icon(LucideIcons.plus),
-                                    label:  Text('Create',style: Theme.of(context).textTheme.titleMedium,),
+                                    label: Text(
+                                      'Create',
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.titleMedium,
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(width: 10),
@@ -118,14 +124,30 @@ class ProductPage extends StatelessWidget {
                                     onPressed: () {
                                       productScreenController.toggleChange(1);
                                     },
-                                    icon:  Icon(LucideIcons.plus, color: Colors.white,),
-                                    label:  Text('Create',style: Theme.of(context).textTheme.titleSmall,),
+                                    icon: Icon(
+                                      LucideIcons.plus,
+                                      color: Colors.white,
+                                    ),
+                                    label: Text(
+                                      'Create',
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.titleSmall,
+                                    ),
                                   ),
                                   const SizedBox(width: 10),
                                   ElevatedButton.icon(
                                     onPressed: () {},
-                                    icon:  Icon(LucideIcons.download,color: Colors.white,),
-                                    label:  Text('Excel',style: Theme.of(context).textTheme.titleSmall,),
+                                    icon: Icon(
+                                      LucideIcons.download,
+                                      color: Colors.white,
+                                    ),
+                                    label: Text(
+                                      'Excel',
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.titleSmall,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -182,7 +204,7 @@ class ProductPage extends StatelessWidget {
                             child: Padding(
                               padding: const EdgeInsets.all(20),
                               child: Container(
-                                width: MediaQuery.of(context).size.width *0.87,
+                                width: MediaQuery.of(context).size.width * 0.87,
                                 decoration: BoxDecoration(
                                   color: Color(0xFF171A3B),
                                   borderRadius: BorderRadius.circular(20),
@@ -241,6 +263,11 @@ class ProductPage extends StatelessWidget {
                                           DataCell(
                                             Text(
                                               product.brand?.name ?? 'Unknown',
+                                            ),
+                                          ),
+                                          DataCell(
+                                            Text(
+                                              ' ${product.price.toString()} \$',
                                             ),
                                           ),
                                           DataCell(

@@ -12,4 +12,4 @@ class MainProductScreen extends StatelessWidget {
       body:  Obx(() => _productScreenController.screens[_productScreenController.currentIndex.value]),
     );
   }
-}
+} 
