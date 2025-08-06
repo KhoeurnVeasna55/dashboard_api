@@ -33,6 +33,7 @@ class _MyAppState extends State<MyApp> {
         title: 'Flutter Demo',
         initialBinding: Binding(),
         theme: AppTheme.darkTheme,
+        
         home: authController.isLogin.isTrue ? MainPage() : LoginPage(),
       ),
     );
