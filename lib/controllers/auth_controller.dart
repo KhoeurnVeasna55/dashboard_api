@@ -11,7 +11,7 @@ class AuthController extends GetxController {
   final currentUser = ''.obs;
   final token = ''.obs;
 
-  final tokenLoaded = false.obs; // Add this
+  final tokenLoaded = false.obs; 
 
   final isLogin = true.obs;
 
@@ -27,6 +27,7 @@ class AuthController extends GetxController {
       isLogin.value = !JwtDecoder.isExpired(tokenFromStorage);
       currentUser.value = tokenFromStorage;
       token.value = tokenFromStorage;
+      
     } else {
       isLogin.value = false;
     }
@@ -50,7 +51,7 @@ class AuthController extends GetxController {
     try {
       isLoading.value = true;
       final fetchedUser = await AuthServiceApi().fetchCurrentUser();
-      userModel.value = fetchedUser; // ✅ Assign to observable
+      userModel.value = fetchedUser; 
     } catch (e) {
       log('Error fetching user: $e');
     } finally {

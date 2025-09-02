@@ -1,3 +1,4 @@
+import 'package:dashboard_admin/screen/category_screen/main_category.dart';
 import 'package:dashboard_admin/screen/home_ds.dart';
 import 'package:dashboard_admin/screen/products-screen/main_product_screen.dart';
 import 'package:flutter/material.dart';
@@ -44,6 +45,8 @@ class MainPage extends StatelessWidget {
                           return HomeDsPage(controller: _controller);
                         case 1:
                           return MainProductScreen();
+                        case 2:
+                          return MainCategory();
                         default:
                           return Center(child: Text('Page not found'));
                       }
@@ -141,12 +144,12 @@ class ExampleSidebarX extends StatelessWidget {
           },
         ),
         const SidebarXItem(icon: LucideIcons.shoppingBag100, label: 'Products'),
-        const SidebarXItem(icon: LucideIcons.creditCard, label: 'Payments'),
+        const SidebarXItem(icon: LucideIcons.creditCard, label: 'Category'),
         SidebarXItem(
           icon: LucideIcons.heart,
           label: 'Favorites',
           selectable: false,
-          // onTap: () => _showDisabledAlert(context),
+          onTap: () => _showDisabledAlert(context),
         ),
         // ignore: deprecated_member_use
         const SidebarXItem(iconWidget: FlutterLogo(size: 20), label: 'Flutter'),
@@ -154,53 +157,54 @@ class ExampleSidebarX extends StatelessWidget {
     );
   }
 
-  // void _showDisabledAlert(BuildContext context) {
-  //   ScaffoldMessenger.of(context).showSnackBar(
-  //     const SnackBar(
-  //       content: Text(
-  //         'Item disabled for selecting',
-  //         style: TextStyle(color: Colors.black),
-  //       ),
-  //       backgroundColor: Colors.white,
-  //     ),
-  //   );
-  // }
+  void _showDisabledAlert(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          'Item disabled for selecting',
+          style: TextStyle(color: Colors.black),
+        ),
+        backgroundColor: Colors.white,
+      ),
+    );
+  }
 }
 
-// class _ScreensExample extends StatelessWidget {
-//   const _ScreensExample({required this.controller});
+// ignore: unused_element
+class _ScreensExample extends StatelessWidget {
+  const _ScreensExample({required this.controller});
 
-//   final SidebarXController controller;
+  final SidebarXController controller;
 
-//   @override
-//   Widget build(BuildContext context) {
-//     final theme = Theme.of(context);
-//     return AnimatedBuilder(
-//       animation: controller,
-//       builder: (context, child) {
-//         final pageTitle = _getTitleByIndex(controller.selectedIndex);
-//         switch (controller.selectedIndex) {
-//           case 0:
-//             return ListView.builder(
-//               padding: const EdgeInsets.only(top: 10),
-//               itemBuilder: (context, index) => Container(
-//                 height: 100,
-//                 width: double.infinity,
-//                 margin:  EdgeInsets.only(bottom: 10, right: 10, left: 10),
-//                 decoration: BoxDecoration(
-//                   borderRadius: BorderRadius.circular(20),
-//                   color: Theme.of(context).canvasColor,
-//                   boxShadow: const [BoxShadow()],
-//                 ),
-//               ),
-//             );
-//           default:
-//             return Text(pageTitle, style: theme.textTheme.headlineSmall);
-//         }
-//       },
-//     );
-//   }
-// }
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (context, child) {
+        final pageTitle = getTitleByIndex(controller.selectedIndex);
+        switch (controller.selectedIndex) {
+          case 0:
+            return ListView.builder(
+              padding: const EdgeInsets.only(top: 10),
+              itemBuilder: (context, index) => Container(
+                height: 100,
+                width: double.infinity,
+                margin: EdgeInsets.only(bottom: 10, right: 10, left: 10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: Theme.of(context).canvasColor,
+                  boxShadow: const [BoxShadow()],
+                ),
+              ),
+            );
+          default:
+            return Text(pageTitle, style: theme.textTheme.headlineSmall);
+        }
+      },
+    );
+  }
+}
 
 String getTitleByIndex(int index) {
   switch (index) {
@@ -209,15 +213,11 @@ String getTitleByIndex(int index) {
     case 1:
       return 'Products';
     case 2:
-      return 'People';
+      return 'Category';
     case 3:
       return 'Favorites';
     case 4:
       return 'Custom iconWidget';
-    case 5:
-      return 'Profile';
-    case 6:
-      return 'Settings';
     default:
       return 'Not found page';
   }

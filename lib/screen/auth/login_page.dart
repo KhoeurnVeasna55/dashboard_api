@@ -101,7 +101,7 @@ class _LoginPageState extends State<LoginPage> {
                                       Get.put<SidebarXController>(
                                         sidebarController,
                                       );
-                                      Get.to(MainPage());
+                                      Get.offAll(MainPage());
                                     }
                                   }
                                 },

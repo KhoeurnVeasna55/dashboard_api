@@ -1,70 +1,61 @@
 import 'dart:convert';
 import 'dart:developer';
-
 import 'package:dashboard_admin/core/URL/url.dart';
-import 'package:dashboard_admin/screen/auth/login_page.dart';
+import 'package:dashboard_admin/models/user_model.dart';
 import 'package:dashboard_admin/services/store_token.dart';
-import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
 
-import '../models/user_model.dart';
-
 class AuthServiceApi {
-  Future<String?> _getToken() async {
-    return await StoreToken().getToken();
-  }
+  final _storeToken = StoreToken();
 
   Future<bool> login(String email, String password) async {
     try {
-      final url = Uri.parse('$URL/users/login');
+      final url = Uri.parse('$URL/api/auth/login');
       final response = await http.post(
         url,
         body: jsonEncode({'email': email, 'password': password}),
-        headers: {
-          'x-api-key': 'my_super_secret_key',
-          'Content-Type': 'application/json',
-        },
+        headers: {'Content-Type': 'application/json'},
       );
-      if (response.statusCode == 201) {
-        final responseData = jsonDecode(response.body);
-        final token = responseData['token'];
-        await StoreToken().createToken(token);
-        log('Token: $token');
+
+      if (response.statusCode == 200) {
+        final token = jsonDecode(response.body)['token'];
+        final userRole = jsonDecode(response.body)['user']['role'];
+        if (userRole == 'admin') {
+          await _storeToken.createToken(token);
+        }
         return true;
-      } else {
-        log('error to Login at Authservice ');
-        return false;
       }
+      return false;
     } catch (e) {
-      log('error to fetch current user');
+      log('Login error: $e');
       return false;
     }
   }
 
   Future<UserModel> fetchCurrentUser() async {
-    final token = await _getToken();
+    final token = await _storeToken.getToken();
+
+    if (token == null || JwtDecoder.isExpired(token)) {
+      throw Exception('Token is invalid or expired');
+    }
 
     try {
-      final uid = JwtDecoder.decode(token!)['_id'];
+      final url = Uri.parse('$URL/api/auth/me');
 
-      final url = Uri.parse('$URL/users/profile/$uid');
-      final response = await http.get(url, headers: {'Bearer Token': token});
-      final bool hasExpired = JwtDecoder.isExpired(token);
-      if (hasExpired) {
-        Get.to(LoginPage());
-        Get.snackbar('token Expired', 'Please log in again.');
-        return UserModel.empty();
-      }
+      final response = await http.get(
+        url,
+        headers: {'Authorization': 'Bearer $token'},
+      );
+
       if (response.statusCode == 200) {
-        final Map<String, dynamic> jwtResponsData = jsonDecode(response.body);
-        return UserModel.fromJson(jwtResponsData);
+        return UserModel.fromJson(jsonDecode(response.body));
       } else {
-        return UserModel.empty();
+        throw Exception('Failed to load user data');
       }
     } catch (e) {
-      log('error to fetch crrent user $e');
-      return UserModel.empty();
+      log('fetchCurrentUser error: $e');
+      rethrow; 
     }
   }
 }

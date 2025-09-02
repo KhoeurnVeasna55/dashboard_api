@@ -24,6 +24,6 @@ class StoreToken {
 
   Future<void> removeToken() async {
     await _box.remove(_key);
-    _tokenController.add(null); // notify logout
+    _tokenController.add(null); 
   }
 }

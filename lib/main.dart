@@ -9,8 +9,10 @@ import 'services/store_token.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); 
+
   await GetStorage.init();
   await dotenv.load(fileName: ".env");
+
   StoreToken.initialize();
   Get.put(AuthController());
   runApp(const MyApp());

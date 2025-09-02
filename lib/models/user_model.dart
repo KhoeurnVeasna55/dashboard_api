@@ -1,70 +1,78 @@
+import 'dart:convert';
+
+AuthResponseModel authResponseModelFromJson(String str) =>
+    AuthResponseModel.fromJson(json.decode(str));
+
+String authResponseModelToJson(AuthResponseModel data) =>
+    json.encode(data.toJson());
+
+class AuthResponseModel {
+  final String? token;
+  final UserModel? user;
+
+  AuthResponseModel({this.token, this.user});
+
+  factory AuthResponseModel.fromJson(Map<String, dynamic> json) =>
+      AuthResponseModel(
+        token: json["token"],
+
+        user: json["user"] == null ? null : UserModel.fromJson(json["user"]),
+      );
+
+  Map<String, dynamic> toJson() => {"token": token, "user": user?.toJson()};
+}
 
 class UserModel {
-  final String id;
-  final String name;
-  final String email;
-  final String password;
-  final String role;
-  final bool isActive;
-  final List<dynamic> orders;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  final int v;
+  final String? id;
+  final String? name;
+  final String? email;
+  final String? password;
+  final bool? isVerified;
+  final String? role;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+  final int? v;
 
   UserModel({
-    required this.id,
-    required this.name,
-    required this.email,
-    required this.password,
-    required this.role,
-    required this.isActive,
-    required this.orders,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.v,
+    this.id,
+    this.name,
+    this.email,
+    this.password,
+    this.isVerified,
+    this.role,
+    this.createdAt,
+    this.updatedAt,
+    this.v,
   });
 
-  factory UserModel.fromJson(Map<String, dynamic> json) {
-    return UserModel(
-      id: json['_id'] as String,
-      name: json['name'] as String,
-      email: json['email'] as String,
-      password: json['password'] as String,
-      role: json['role'] as String,
-      isActive: json['isActive'] as bool,
-      orders: List<dynamic>.from(json['orders'] as List),
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      updatedAt: DateTime.parse(json['updatedAt'] as String),
-      v: json['__v'] as int,
-    );
-  }
-  factory UserModel.empty() {
-    return UserModel(
-      id: '',
-      name: '',
-      email: '',
-      password: '',
-      role: '',
-      isActive: false,
-      orders: const [],
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-      v: 0,
-    );
-  }
+  factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
+    id: json["_id"],
+    name: json["name"],
+    email: json["email"],
+    password: json["password"],
+    isVerified: json["isVerified"],
+    role: json["role"],
 
-  Map<String, dynamic> toJson() {
-    return {
-      '_id': id,
-      'name': name,
-      'email': email,
-      'password': password,
-      'role': role,
-      'isActive': isActive,
-      'orders': orders,
-      'createdAt': createdAt.toIso8601String(),
-      'updatedAt': updatedAt.toIso8601String(),
-      '__v': v,
-    };
-  }
+    createdAt: json["createdAt"] == null
+        ? null
+        : DateTime.parse(json["createdAt"]),
+    updatedAt: json["updatedAt"] == null
+        ? null
+        : DateTime.parse(json["updatedAt"]),
+
+    v: json["__v"],
+  );
+
+  Map<String, dynamic> toJson() => {
+    "_id": id,
+    "name": name,
+    "email": email,
+    "password": password,
+    "isVerified": isVerified,
+    "role": role,
+
+    "createdAt": createdAt?.toIso8601String(),
+    "updatedAt": updatedAt?.toIso8601String(),
+    "__v": v,
+  };
 }
